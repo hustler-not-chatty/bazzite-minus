@@ -1,2 +1,2 @@
 [org.gnome.shell] 
-enabled-extensions=['background-logo@fedorahosted.org', 'appindicatorsupport@rgcjonas.gmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'gsconnect@andyholmes.github.io', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx', 'hotedge@jonathan.jdoda.ca', 'supergfxctl-gex@asus-linux.org', 'caffeine@patapon.info', 'tilingshell@ferrarodomenico.com']
+enabled-extensions=['background-logo@fedorahosted.org', 'appindicatorsupport@rgcjonas.gmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'gsconnect@andyholmes.github.io', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx', 'hotedge@jonathan.jdoda.ca', 'supergfxctl-gex@asus-linux.org', 'caffeine@patapon.info']

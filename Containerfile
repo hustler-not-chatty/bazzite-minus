@@ -351,13 +351,10 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
         /tmp/akmods-rpms/kmods/*v4l2loopback*.rpm \
         /tmp/akmods-rpms/kmods/*wl*.rpm \
         /tmp/akmods-rpms/kmods/*framework-laptop*.rpm \
-        /tmp/akmods-extra-rpms/kmods/*gcadapter_oc*.rpm \
         /tmp/akmods-extra-rpms/kmods/*nct6687*.rpm \
         /tmp/akmods-extra-rpms/kmods/*zenergy*.rpm \
         /tmp/akmods-extra-rpms/kmods/*vhba*.rpm \
         /tmp/akmods-extra-rpms/kmods/*gpd-fan*.rpm \
-        /tmp/akmods-extra-rpms/kmods/*ayaneo-platform*.rpm \
-        /tmp/akmods-extra-rpms/kmods/*ayn-platform*.rpm \
         /tmp/akmods-extra-rpms/kmods/*bmi260*.rpm \
         /tmp/akmods-extra-rpms/kmods/*ryzen-smu*.rpm \
         /tmp/akmods-extra-rpms/kmods/*evdi*.rpm && \
@@ -435,7 +432,6 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
 # Install new packages
 RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
     rpm-ostree install \
-        discover-overlay \
         sunshine \
         python3-pip \
         libadwaita \
@@ -458,7 +454,6 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
         webapp-manager \
         btop \
         duf \
-        fish \
         lshw \
         xdotool \
         wmctrl \
@@ -471,33 +466,20 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
         libxcrypt-compat \
         mesa-libGLU \
         vulkan-tools \
-        glibc.i686 \
-        extest.i686 \
         xwiimote-ng \
-        twitter-twemoji-fonts \
         google-noto-sans-cjk-fonts \
-        lato-fonts \
-        fira-code-fonts \
-        nerd-fonts \
+        cascadia-code-fonts \
+        cascadia-mono-fonts \
         fastfetch \
         glow \
         gum \
-        vim \
-        cockpit-networkmanager \
-        cockpit-podman \
-        cockpit-selinux \
-        cockpit-system \
-        cockpit-navigator \
-        cockpit-storaged \
+        nano \
         topgrade \
         ydotool \
         yafti \
         stress-ng \
         btrfs-assistant \
         podman-compose \
-        edk2-ovmf \
-        qemu \
-        libvirt \
         lsb_release && \
     rpm-ostree install \
         ublue-update && \
@@ -605,13 +587,6 @@ RUN rm -f /etc/profile.d/toolbox.sh && \
     mkdir -p /var/tmp && chmod 1777 /var/tmp && \
     cp --no-dereference --preserve=links /usr/lib/libdrm.so.2 /usr/lib/libdrm.so && \
     cp --no-dereference --preserve=links /usr/lib64/libdrm.so.2 /usr/lib64/libdrm.so && \
-    sed -i 's@/usr/bin/steam@/usr/bin/bazzite-steam@g' /usr/share/applications/steam.desktop && \
-    echo "Replace steam BPM shortcut action" && \
-    sed -i 's@Exec=steam steam://open/bigpicture@Exec=/usr/bin/bazzite-steam-bpm@g' /usr/share/applications/steam.desktop && \
-    mkdir -p /etc/skel/.config/autostart/ && \
-    cp "/usr/share/applications/steam.desktop" "/etc/skel/.config/autostart/steam.desktop" && \
-    sed -i 's@/usr/bin/bazzite-steam %U@/usr/bin/bazzite-steam -silent %U@g' /etc/skel/.config/autostart/steam.desktop && \
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/fish.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/nvtop.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/btop.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/yad-icon-browser.desktop && \
@@ -622,9 +597,6 @@ RUN rm -f /etc/profile.d/toolbox.sh && \
     ln -s "/usr/share/ublue-os/firstboot/launcher/login-profile.sh" \
     "/etc/profile.d/ublue-firstboot.sh" && \
     mkdir -p "/etc/xdg/autostart" && \
-    cp "/usr/share/applications/discover_overlay.desktop" "/etc/xdg/autostart/discover_overlay.desktop" && \
-    sed -i 's@Exec=discover-overlay@Exec=/usr/bin/bazzite-discover-overlay@g' /etc/xdg/autostart/discover_overlay.desktop && \
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/discover_overlay.desktop && \
     cp "/usr/share/ublue-os/firstboot/yafti.yml" "/etc/yafti.yml" && \
     echo "import \"/usr/share/ublue-os/just/80-bazzite.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/81-bazzite-fixes.just\"" >> /usr/share/ublue-os/justfile && \
@@ -632,7 +604,6 @@ RUN rm -f /etc/profile.d/toolbox.sh && \
     echo "import \"/usr/share/ublue-os/just/82-bazzite-cdemu.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/82-bazzite-sunshine.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/82-bazzite-rmlint.just\"" >> /usr/share/ublue-os/justfile && \
-    echo "import \"/usr/share/ublue-os/just/82-bazzite-waydroid.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/83-bazzite-audio.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/84-bazzite-virt.just\"" >> /usr/share/ublue-os/justfile && \
     echo "import \"/usr/share/ublue-os/just/85-bazzite-image.just\"" >> /usr/share/ublue-os/justfile && \
@@ -686,10 +657,6 @@ RUN rm -f /etc/profile.d/toolbox.sh && \
     sed -i 's#/var/lib/selinux#/etc/selinux#g' /usr/lib/python3.*/site-packages/setroubleshoot/util.py && \
     mkdir -p /etc/flatpak/remotes.d && \
     curl -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo && \
-    systemctl enable brew-dir-fix.service && \
-    systemctl enable brew-setup.service && \
-    systemctl disable brew-upgrade.timer && \
-    systemctl disable brew-update.timer && \
     systemctl disable displaylink.service && \
     systemctl enable input-remapper.service && \
     systemctl enable bazzite-flatpak-manager.service && \
@@ -704,9 +671,6 @@ RUN rm -f /etc/profile.d/toolbox.sh && \
     systemctl --global enable systemd-tmpfiles-setup.service && \
     systemctl --global disable sunshine.service && \
     systemctl disable waydroid-container.service && \
-    curl -Lo /etc/dxvk-example.conf https://raw.githubusercontent.com/doitsujin/dxvk/master/dxvk.conf && \
-    curl -Lo /usr/bin/waydroid-choose-gpu https://raw.githubusercontent.com/KyleGospo/waydroid-scripts/main/waydroid-choose-gpu.sh && \
-    chmod +x /usr/bin/waydroid-choose-gpu && \
     curl -Lo /usr/lib/sysctl.d/99-bore-scheduler.conf https://github.com/CachyOS/CachyOS-Settings/raw/master/usr/lib/sysctl.d/99-bore-scheduler.conf && \
     curl -Lo /etc/distrobox/docker.ini https://github.com/ublue-os/toolboxes/raw/refs/heads/main/apps/docker/distrobox.ini && \
     curl -Lo /etc/distrobox/incus.ini https://github.com/ublue-os/toolboxes/raw/refs/heads/main/apps/docker/incus.ini && \
