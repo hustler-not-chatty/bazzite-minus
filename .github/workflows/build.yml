@@ -61,9 +61,9 @@ jobs:
       fail-fast: false
       matrix:
         base_image_flavor: [main]
-        base_name: [bazzite, bazzite-deck, bazzite-nvidia, bazzite-deck-nvidia]
-        base_image_name: [kinoite, silverblue]
-        target_image_flavor: [main, asus, surface]
+        base_name: [bazzite, bazzite-nvidia]
+        base_image_name: [silverblue]
+        target_image_flavor: [main]
         target_nvidia_flavor: [nvidia, nvidia-open]
         fedora_version: [41]
         include:
@@ -330,11 +330,11 @@ jobs:
             io.artifacthub.package.logo-url=https://raw.githubusercontent.com/ublue-os/bazzite/main/repo_content/logo.png
             io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/bazzite/refs/heads/main/README.md
             org.opencontainers.image.created=<timestamp>
-            org.opencontainers.image.description=Bazzite is a custom image built upon Fedora Atomic Desktops that brings the best of Linux gaming to all of your devices - including your favorite handheld.
+            org.opencontainers.image.description=Derived from Bazzite, a custom image built upon Fedora Atomic Desktops that brings the best of Linux gaming to all of your devices - including your favorite handheld.
             org.opencontainers.image.licenses=Apache-2.0
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.source=https://github.com/ublue-os/bazzite
-            org.opencontainers.image.title=Bazzite
+            org.opencontainers.image.source=https://github.com/hustler-not-chatty/bazzite-minus
+            org.opencontainers.image.title=Bazzite Minus
             org.opencontainers.image.vendor=Universal Blue
             org.opencontainers.image.url=https://bazzite.gg
             org.universal-blue.pkg.kernel=<relver:kernel>

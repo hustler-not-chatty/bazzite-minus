@@ -376,20 +376,12 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
 # Install patched switcheroo control with proper discrete GPU support
 # Tempporary fix for GPU Encoding
 RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    rpm-ostree install \
-        mesa-dri-drivers.i686 && \
     mkdir -p /tmp/mesa-fix64/dri && \
     cp /usr/lib64/libgallium-*.so /tmp/mesa-fix64/ && \
     cp /usr/lib64/dri/kms_swrast_dri.so /tmp/mesa-fix64/dri/ && \
     cp /usr/lib64/dri/libdril_dri.so /tmp/mesa-fix64/dri/ && \
     cp /usr/lib64/dri/swrast_dri.so /tmp/mesa-fix64/dri/ && \
     cp /usr/lib64/dri/virtio_gpu_dri.so /tmp/mesa-fix64/dri/ && \
-    mkdir -p /tmp/mesa-fix32/dri && \
-    cp /usr/lib/libgallium-*.so /tmp/mesa-fix32/ && \
-    cp /usr/lib/dri/kms_swrast_dri.so /tmp/mesa-fix32/dri/ && \
-    cp /usr/lib/dri/libdril_dri.so /tmp/mesa-fix32/dri/ && \
-    cp /usr/lib/dri/swrast_dri.so /tmp/mesa-fix32/dri/ && \
-    cp /usr/lib/dri/virtio_gpu_dri.so /tmp/mesa-fix32/dri/ && \
     rpm-ostree override replace \
     --experimental \
     --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
@@ -415,9 +407,7 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
         bluez-libs \
         xorg-x11-server-Xwayland && \
     rsync -a /tmp/mesa-fix64/ /usr/lib64/ && \
-    rsync -a /tmp/mesa-fix32/ /usr/lib/ && \
     rm -rf /tmp/mesa-fix64 && \
-    rm -rf /tmp/mesa-fix32 && \
     sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/rpmfusion-*.repo && \
     rpm-ostree install \
         libaacs \
@@ -531,85 +521,6 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
     /usr/libexec/containerbuild/cleanup.sh && \
     ostree container commit
 
-# Install Steam & Lutris, plus supporting packages
-# Downgrade ibus to fix an issue with the Steam keyboard
-RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite \
-        ibus \
-        ibus-gtk2 \
-        ibus-gtk3 \
-        ibus-gtk4 \
-        ibus-libs \
-        ibus-panel \
-        ibus-setup \
-        ibus-xinit && \
-    rpm-ostree install \
-        jupiter-sd-mounting-btrfs \
-        at-spi2-core.i686 \
-        atk.i686 \
-        vulkan-loader.i686 \
-        alsa-lib.i686 \
-        fontconfig.i686 \
-        gtk2.i686 \
-        libICE.i686 \
-        libnsl.i686 \
-        libxcrypt-compat.i686 \
-        libpng12.i686 \
-        libXext.i686 \
-        libXinerama.i686 \
-        libXtst.i686 \
-        libXScrnSaver.i686 \
-        NetworkManager-libnm.i686 \
-        nss.i686 \
-        pulseaudio-libs.i686 \
-        libcurl.i686 \
-        systemd-libs.i686 \
-        libva.i686 \
-        libvdpau.i686 \
-        libdbusmenu-gtk3.i686 \
-        libatomic.i686 \
-        pipewire-alsa.i686 \
-        gobject-introspection \
-        clinfo \
-        steam && \
-    rpm-ostree install \
-        lutris \
-        umu-launcher \
-        wine-core.x86_64 \
-        wine-core.i686 \
-        wine-pulseaudio.x86_64 \
-        wine-pulseaudio.i686 \
-        libFAudio.x86_64 \
-        libFAudio.i686 \
-        winetricks \
-        latencyflex-vulkan-layer \
-        mesa-vulkan-drivers.i686 \
-        mesa-va-drivers.i686 \
-        vkBasalt.x86_64 \
-        vkBasalt.i686 \
-        mangohud.x86_64 \
-        mangohud.i686 \
-        libobs_vkcapture.x86_64 \
-        libobs_glcapture.x86_64 \
-        libobs_vkcapture.i686 \
-        libobs_glcapture.i686 && \
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/winetricks.desktop && \
-    curl -Lo /tmp/latencyflex.tar.xz $(curl https://api.github.com/repos/ishitatsuyuki/LatencyFleX/releases/latest | jq -r '.assets[] | select(.name| test(".*.tar.xz$")).browser_download_url') && \
-    mkdir -p /tmp/latencyflex && \
-    tar --no-same-owner --no-same-permissions --no-overwrite-dir --strip-components 1 -xvf /tmp/latencyflex.tar.xz -C /tmp/latencyflex && \
-    rm -f /tmp/latencyflex.tar.xz && \
-    cp -r /tmp/latencyflex/wine/usr/lib/wine/* /usr/lib64/wine/ && \
-    rm -rf /tmp/latencyflex && \
-    curl -Lo /usr/bin/latencyflex https://raw.githubusercontent.com/KyleGospo/LatencyFleX-Installer/main/install.sh && \
-    chmod +x /usr/bin/latencyflex && \
-    sed -i 's@/usr/lib/wine/@/usr/lib64/wine/@g' /usr/bin/latencyflex && \
-    sed -i 's@"dxvk.conf"@"/usr/share/latencyflex/dxvk.conf"@g' /usr/bin/latencyflex && \
-    chmod +x /usr/bin/latencyflex && \
-    /usr/libexec/containerbuild/cleanup.sh && \
-    ostree container commit
-
 # Configure KDE & GNOME
 RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
     if grep -q "kinoite" <<< "${BASE_IMAGE_NAME}"; then \
@@ -682,51 +593,9 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
             gnome-extensions-app \
             gnome-system-monitor \
             gnome-initial-setup \
-            gnome-shell-extension-background-logo \
             gnome-shell-extension-apps-menu && \
-        mkdir -p /tmp/tilingshell && \
-        curl -s https://api.github.com/repos/domferr/tilingshell/releases/latest | \
-            jq -r '.assets | sort_by(.created_at) | .[] | select (.name|test("^tilingshell@.*zip$")) | .browser_download_url' | \
-            wget -qi - -O /tmp/tilingshell/tilingshell@ferrarodomenico.com.zip && \
-        curl -Lo /usr/share/thumbnailers/exe-thumbnailer.thumbnailer https://raw.githubusercontent.com/jlu5/icoextract/master/exe-thumbnailer.thumbnailer && \
-        unzip /tmp/tilingshell/tilingshell@ferrarodomenico.com.zip -d /usr/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com && \
-        rm -rf /tmp/tilingshell && \
         systemctl enable dconf-update.service \
     ; fi && \
-    /usr/libexec/containerbuild/cleanup.sh && \
-    ostree container commit
-
-# Install Gamescope, ROCM, and Waydroid on non-Nvidia images
-RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    rpm-ostree install \
-        gamescope.x86_64 \
-        gamescope-libs.i686 \
-        gamescope-shaders \
-        rocm-hip \
-        rocm-opencl \
-        rocm-clinfo \
-        waydroid \
-        cage \
-        wlr-randr && \
-    sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' /usr/lib/waydroid/data/scripts/waydroid-net.sh && \
-    /usr/libexec/containerbuild/cleanup.sh && \
-    ostree container commit
-
-# Homebrew
-RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    touch /.dockerenv && \
-    mkdir -p /var/home && \
-    mkdir -p /var/roothome && \
-    curl -Lo /tmp/brew-install https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh && \
-    chmod +x /tmp/brew-install && \
-    /tmp/brew-install && \
-    tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew && \
-    /usr/libexec/containerbuild/cleanup.sh && \
-    ostree container commit
-
-# Bash Prexec
-RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    curl -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/ublue-os/bash-preexec/master/bash-preexec.sh &&\
     /usr/libexec/containerbuild/cleanup.sh && \
     ostree container commit
 
