@@ -870,15 +870,6 @@ ARG VERSION_PRETTY="${VERSION_PRETTY}"
 # Fetch NVIDIA driver
 COPY system_files/nvidia/shared system_files/nvidia/${BASE_IMAGE_NAME} /
 
-# Remove everything that doesn't work well with NVIDIA
-RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
-    rpm-ostree override remove \
-        rocm-hip \
-        rocm-opencl \
-        rocm-clinfo && \
-    /usr/libexec/containerbuild/cleanup.sh && \
-    ostree container commit
-
 # Install NVIDIA driver
 RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
     --mount=type=bind,from=nvidia-akmods,src=/rpms,dst=/tmp/akmods-rpms \
