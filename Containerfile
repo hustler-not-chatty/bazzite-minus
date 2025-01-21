@@ -450,7 +450,6 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
         ladspa-noise-suppression-for-voice \
         pipewire-module-filter-chain-sofa \
         python3-icoextract \
-        tailscale \
         webapp-manager \
         btop \
         duf \
@@ -585,7 +584,6 @@ RUN --mount=type=cache,dst=/var/cache/rpm-ostree \
 COPY system_files/overrides /
 RUN rm -f /etc/profile.d/toolbox.sh && \
     mkdir -p /var/tmp && chmod 1777 /var/tmp && \
-    cp --no-dereference --preserve=links /usr/lib/libdrm.so.2 /usr/lib/libdrm.so && \
     cp --no-dereference --preserve=links /usr/lib64/libdrm.so.2 /usr/lib64/libdrm.so && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/nvtop.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/btop.desktop && \
